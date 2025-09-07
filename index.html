@@ -7,6 +7,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+  import { getAuth } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+  import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+  
+  const firebaseConfig = {
+    apiKey: "your-api-key",
+    authDomain: "nexora-research.firebaseapp.com",
+    projectId: "nexora-research",
+    storageBucket: "nexora-research.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "your-app-id"
+  };
+  
+  const app = initializeApp(firebaseConfig);
+  window.auth = getAuth(app);
+  window.db = getFirestore(app);
+</script>
+
 </head>
 <body>
     <!-- Animated Background -->
@@ -414,4 +433,5 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 
