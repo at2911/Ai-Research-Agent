@@ -3,53 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Research Agent</title>
+    <title>Nexora - Your AI Research Companion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🔍 AI Research Agent</h1>
-            <p>Intelligent Research with Real Data</p>
-        </header>
-        
-        <main class="main">
-            <div class="search-section">
-                <div class="form-group">
-                    <label for="researchTopic">Research Topic</label>
-                    <textarea 
-                        id="researchTopic" 
-                        placeholder="Enter any topic... (e.g., Elon Musk, Bitcoin, Climate Change, Python Programming)"
-                        rows="3"
-                    ></textarea>
-                </div>
-                <button id="startResearch" class="btn btn-primary">
-                    <span class="btn-text">Start Research</span>
-                    <div class="spinner hidden"></div>
-                </button>
-            </div>
-            
-            <div id="results" class="results hidden">
-                <div class="results-header">
-                    <h2>📊 Research Results</h2>
-                    <small id="timestamp"></small>
-                </div>
-                
-                <div class="summary-section">
-                    <h3>📝 Summary</h3>
-                    <div id="summaryContent" class="content"></div>
-                </div>
-                
-                <div class="citations-section">
-                    <h3>🔗 Sources</h3>
-                    <div id="citationsContent" class="citations"></div>
-                </div>
-            </div>
-            
-            <div id="error" class="error hidden"></div>
-        </main>
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="particles"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+        <div class="glow-orb glow-orb-3"></div>
     </div>
-    
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <div class="logo-container">
+                <div class="logo">
+                    <div class="logo-symbol">
+                        <span class="logo-n">N</span>
+                        <div class="orbit-ring"></div>
+                        <div class="circuit-pattern">
+                            <div class="circuit-dot"></div>
+                            <div class="circuit-dot"></div>
+                            <div class="circuit-dot"></div>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="brand-name">Nexora</h1>
+            </div>
+            
+            <div class="hero-text">
+                <h2 class="tagline">Your AI Research Companion</h2>
+                <p class="subtitle">Search smarter. Summarize faster. Think deeper.</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Prompt Input Section -->
+            <div class="prompt-section">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea 
+                            id="researchTopic"
+                            placeholder="Ask Nexora anything… from climate change to quantum AI"
+                            rows="3"
+                        ></textarea>
+                        <button class="voice-btn" title="Voice Input">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    
+                    <button id="startResearch" class="submit-btn">
+                        <span class="btn-content">
+                            <i class="fas fa-rocket"></i>
+                            <span class="btn-text">Research with Nexora</span>
+                        </span>
+                        <div class="btn-loading hidden">
+                            <div class="loading-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <span>Researching...</span>
+                        </div>
+                        <div class="btn-glow"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Response Section -->
+            <div id="results" class="response-section hidden">
+                <div class="results-header">
+                    <h3><i class="fas fa-brain"></i> Research Results</h3>
+                    <div class="results-actions">
+                        <button class="action-btn" title="Export as PDF">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
+                        <button class="action-btn" title="Save to History">
+                            <i class="fas fa-bookmark"></i>
+                        </button>
+                        <span id="timestamp" class="timestamp"></span>
+                    </div>
+                </div>
+
+                <div class="knowledge-cards">
+                    <div class="knowledge-card main-summary">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h4>AI Summary</h4>
+                            <button class="expand-btn">
+                                <i class="fas fa-expand-alt"></i>
+                            </button>
+                        </div>
+                        <div class="card-content">
+                            <div id="summaryContent" class="summary-text"></div>
+                        </div>
+                    </div>
+
+                    <div class="knowledge-card sources-card">
+                        <div class="card-header">
+                            <div class="card-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <h4>Knowledge Sources</h4>
+                        </div>
+                        <div class="card-content">
+                            <div id="citationsContent" class="sources-grid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nexora Insights Box -->
+                <div class="insights-box">
+                    <div class="insights-header">
+                        <i class="fas fa-magic"></i>
+                        <span>Nexora Insights</span>
+                    </div>
+                    <div id="nexoraInsights" class="insights-content">
+                        Key takeaways and deep connections will appear here...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div id="error" class="error-section hidden">
+                <div class="error-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div class="error-content">
+                        <h4>Research Failed</h4>
+                        <p id="errorMessage"></p>
+                        <button class="retry-btn">Try Again</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Side Panel (History) -->
+        <aside class="side-panel">
+            <div class="panel-header">
+                <i class="fas fa-history"></i>
+                <span>Research History</span>
+            </div>
+            <div class="history-list">
+                <div class="history-item">
+                    <span class="history-query">Climate change solutions</span>
+                    <span class="history-time">2 min ago</span>
+                </div>
+                <div class="history-item">
+                    <span class="history-query">Quantum computing</span>
+                    <span class="history-time">5 min ago</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with ❤️ by Team Nexora</p>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Docs</a>
+                <a href="#">GitHub</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
+
