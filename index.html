@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Research Agent</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔍 AI Research Agent</h1>
+            <p>Intelligent Research with Real Data</p>
+        </header>
+        
+        <main class="main">
+            <div class="search-section">
+                <div class="form-group">
+                    <label for="researchTopic">Research Topic</label>
+                    <textarea 
+                        id="researchTopic" 
+                        placeholder="Enter any topic... (e.g., Elon Musk, Bitcoin, Climate Change, Python Programming)"
+                        rows="3"
+                    ></textarea>
+                </div>
+                <button id="startResearch" class="btn btn-primary">
+                    <span class="btn-text">Start Research</span>
+                    <div class="spinner hidden"></div>
+                </button>
+            </div>
+            
+            <div id="results" class="results hidden">
+                <div class="results-header">
+                    <h2>📊 Research Results</h2>
+                    <small id="timestamp"></small>
+                </div>
+                
+                <div class="summary-section">
+                    <h3>📝 Summary</h3>
+                    <div id="summaryContent" class="content"></div>
+                </div>
+                
+                <div class="citations-section">
+                    <h3>🔗 Sources</h3>
+                    <div id="citationsContent" class="citations"></div>
+                </div>
+            </div>
+            
+            <div id="error" class="error hidden"></div>
+        </main>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
