@@ -1,4 +1,317 @@
 // Configuration - Add your API keys here
+// Authentication System
+class NexoraAuth {
+    constructor() {
+        this.currentUser = null;
+        this.users = JSON.parse(localStorage.getItem('nexora_users')) || {};
+        this.initializeAuth();
+    }
+
+    initializeAuth() {
+        // Check if user is already logged in
+        const savedUser = localStorage.getItem('nexora_current_user');
+        if (savedUser) {
+            this.currentUser = JSON.parse(savedUser);
+            this.showMainScreen();
+        } else {
+            this.showLoginScreen();
+        }
+
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Tab switching
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                const tabType = e.currentTarget.dataset.tab;
+                this.switchTab(tabType);
+            });
+        });
+
+        // Demo access button
+        const demoBtn = document.getElementById('demoBtn');
+        if (demoBtn) {
+            demoBtn.addEventListener('click', () => {
+                this.loginAsDemo();
+            });
+        }
+
+        // Login form
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleLogin();
+            });
+        }
+
+        // Register form
+        const registerForm = document.getElementById('registerForm');
+        if (registerForm) {
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleRegister();
+            });
+        }
+
+        // Logout button
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                this.logout();
+            });
+        }
+    }
+
+    switchTab(tabType) {
+        // Update tab buttons
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelector(`[data-tab="${tabType}"]`).classList.add('active');
+
+        // Update forms
+        document.querySelectorAll('.auth-form').forEach(form => {
+            form.classList.remove('active');
+        });
+        document.getElementById(`${tabType}Form`).classList.add('active');
+
+        // Clear any errors
+        this.hideAuthError();
+    }
+
+    async handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const rememberMe = document.getElementById('rememberMe').checked;
+
+        if (!email || !password) {
+            this.showAuthError('Please fill in all fields');
+            return;
+        }
+
+        this.setAuthLoading(true);
+
+        // Simulate API delay
+        await this.delay(1000);
+
+        // Check credentials
+        if (this.users[email] && this.users[email].password === password) {
+            this.currentUser = {
+                email: email,
+                name: this.users[email].name,
+                loginTime: new Date().toISOString()
+            };
+
+            if (rememberMe) {
+                localStorage.setItem('nexora_current_user', JSON.stringify(this.currentUser));
+            }
+
+            this.showSuccessMessage('Login successful! Welcome back to Nexora.');
+            setTimeout(() => {
+                this.showMainScreen();
+            }, 1000);
+        } else {
+            this.showAuthError('Invalid email or password. Try the demo access below!');
+        }
+
+        this.setAuthLoading(false);
+    }
+
+    async handleRegister() {
+        const name = document.getElementById('registerName').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!name || !email || !password || !confirmPassword) {
+            this.showAuthError('Please fill in all fields');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            this.showAuthError('Passwords do not match');
+            return;
+        }
+
+        if (password.length < 6) {
+            this.showAuthError('Password must be at least 6 characters');
+            return;
+        }
+
+        if (this.users[email]) {
+            this.showAuthError('Email already registered. Please login instead.');
+            return;
+        }
+
+        this.setAuthLoading(true);
+
+        // Simulate API delay
+        await this.delay(1500);
+
+        // Save new user
+        this.users[email] = {
+            name: name,
+            password: password,
+            registeredAt: new Date().toISOString()
+        };
+
+        localStorage.setItem('nexora_users', JSON.stringify(this.users));
+
+        this.currentUser = {
+            email: email,
+            name: name,
+            loginTime: new Date().toISOString()
+        };
+
+        localStorage.setItem('nexora_current_user', JSON.stringify(this.currentUser));
+
+        this.showSuccessMessage(`Welcome to Nexora, ${name}! Account created successfully.`);
+        setTimeout(() => {
+            this.showMainScreen();
+        }, 1000);
+
+        this.setAuthLoading(false);
+    }
+
+    loginAsDemo() {
+        this.currentUser = {
+            email: 'demo@nexora.ai',
+            name: 'Demo User',
+            loginTime: new Date().toISOString(),
+            isDemo: true
+        };
+
+        this.showSuccessMessage('Welcome to Nexora Demo! Exploring full functionality...');
+        setTimeout(() => {
+            this.showMainScreen();
+        }, 1000);
+    }
+
+    logout() {
+        localStorage.removeItem('nexora_current_user');
+        this.currentUser = null;
+        this.showLoginScreen();
+        this.showSuccessMessage('Logged out successfully. Come back soon!');
+    }
+
+    showMainScreen() {
+        document.getElementById('loginScreen').classList.remove('active');
+        document.getElementById('mainScreen').classList.add('active');
+
+        // Update user info in nav
+        const userNameEl = document.getElementById('userName');
+        if (userNameEl && this.currentUser) {
+            userNameEl.textContent = this.currentUser.name;
+        }
+
+        // Initialize main app functionality
+        this.initializeMainApp();
+    }
+
+    showLoginScreen() {
+        document.getElementById('mainScreen').classList.remove('active');
+        document.getElementById('loginScreen').classList.add('active');
+    }
+
+    setAuthLoading(loading) {
+        const loginBtn = document.querySelector('#loginForm .auth-btn');
+        const registerBtn = document.querySelector('#registerForm .auth-btn');
+        const activeBtn = document.querySelector('.auth-form.active .auth-btn');
+
+        if (activeBtn) {
+            const btnContent = activeBtn.querySelector('.btn-content');
+            const btnLoading = activeBtn.querySelector('.btn-loading');
+
+            if (loading) {
+                btnContent.style.opacity = '0';
+                btnLoading.classList.remove('hidden');
+                btnLoading.classList.add('active');
+                activeBtn.disabled = true;
+            } else {
+                btnContent.style.opacity = '1';
+                btnLoading.classList.add('hidden');
+                btnLoading.classList.remove('active');
+                activeBtn.disabled = false;
+            }
+        }
+    }
+
+    showAuthError(message) {
+        const errorEl = document.getElementById('authError');
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    hideAuthError() {
+        const errorEl = document.getElementById('authError');
+        if (errorEl) {
+            errorEl.classList.add('hidden');
+        }
+    }
+
+    showSuccessMessage(message) {
+        // Create temporary success notification
+        const notification = document.createElement('div');
+        notification.className = 'success-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            z-index: 1000;
+            animation: slideInRight 0.3s ease-out;
+        `;
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    initializeMainApp() {
+        // Initialize the main research functionality
+        console.log('🚀 Nexora main application initialized for:', this.currentUser.name);
+        
+        // Update search stats
+        this.updateSearchStats();
+    }
+
+    updateSearchStats() {
+        const searchCount = localStorage.getItem('nexora_search_count') || '0';
+        const totalSearches = document.getElementById('totalSearches');
+        if (totalSearches) {
+            totalSearches.textContent = searchCount;
+        }
+    }
+}
+
+// Initialize authentication when page loads
+let nexoraAuth;
+document.addEventListener('DOMContentLoaded', () => {
+    nexoraAuth = new NexoraAuth();
+});
+
+// Your existing research functionality goes below...
+// (Keep all your existing app.js code for research functionality)
+
 const API_KEYS = {
     SERP_API: 'a67651251b9b0530a61493903c4c58f5b9631a169641ec585c379799e9d24332',  
     NEWS_API: '3bc62f5642254a21b8ea8c2e405842b1',  
@@ -587,3 +900,4 @@ researchTopicInput.addEventListener('input', function() {
 });
 
 console.log('🚀 Nexora Multi-Source Research Engine initialized');
+
