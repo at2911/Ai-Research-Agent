@@ -1440,3 +1440,14 @@ body {
         align-items: flex-start;
     }
 }
+/* Hide Export and Share buttons */
+#exportBtn,
+#shareBtn {
+    display: none !important;
+}
+
+/* Adjust results actions layout after removing buttons */
+.results-actions {
+    justify-content: flex-end;
+}
+
