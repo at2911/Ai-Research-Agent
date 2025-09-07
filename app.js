@@ -1,108 +1,108 @@
-const express = require('express');
-const cors = require('cors');
-const axios = require('axios');
+const researchTopicInput = document.getElementById('researchTopic');
+const startResearchBtn = document.getElementById('startResearch');
+const resultsDiv = document.getElementById('results');
+const summaryContent = document.getElementById('summaryContent');
+const citationsContent = document.getElementById('citationsContent');
+const errorDiv = document.getElementById('error');
+const timestampEl = document.getElementById('timestamp');
+const btnText = document.querySelector('.btn-text');
+const spinner = document.querySelector('.spinner');
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+startResearchBtn.addEventListener('click', performResearch);
 
-app.use(cors());
-app.use(express.json());
-
-// Wikipedia API function (free, no API key needed)
-async function getWikipediaSummary(topic) {
-  try {
-    const cleanTopic = topic.replace(/\s+/g, '_');
-    const response = await axios.get(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTopic)}`);
-    return {
-      title: response.data.title,
-      summary: response.data.extract,
-      url: response.data.content_urls.desktop.page
-    };
-  } catch (error) {
-    return null;
-  }
-}
-
-// Search Wikipedia for related articles
-async function searchWikipedia(topic) {
-  try {
-    const response = await axios.get(`https://en.wikipedia.org/api/rest_v1/page/search/${encodeURIComponent(topic)}`);
-    return response.data.pages.slice(0, 3).map(page => ({
-      title: page.title,
-      summary: page.description || page.excerpt,
-      url: `https://en.wikipedia.org/wiki/${page.key}`
-    }));
-  } catch (error) {
-    return [];
-  }
-}
-
-app.post('/api/research', async (req, res) => {
-  try {
-    const topic = (req.body.topic || '').trim();
+async function performResearch() {
+    const topic = researchTopicInput.value.trim();
+    
     if (!topic) {
-      return res.status(400).json({ error: "No research topic provided" });
-    }
-
-    console.log(`Researching: ${topic}`);
-    
-    // Get main Wikipedia summary
-    const mainSummary = await getWikipediaSummary(topic);
-    
-    // Get related articles
-    const relatedArticles = await searchWikipedia(topic);
-    
-    let summary = '';
-    let citations = [];
-    
-    if (mainSummary && mainSummary.summary) {
-      summary = `**${mainSummary.title}**\n\n${mainSummary.summary}`;
-      citations.push({
-        title: mainSummary.title,
-        url: mainSummary.url
-      });
+        showError('Please enter a research topic');
+        return;
     }
     
-    // Add related articles
-    if (relatedArticles.length > 0) {
-      summary += '\n\n**Related Information:**\n';
-      relatedArticles.forEach(article => {
-        if (article.summary) {
-          summary += `\n• **${article.title}**: ${article.summary}\n`;
-          citations.push({
-            title: article.title,
-            url: article.url
-          });
+    setLoadingState(true);
+    hideError();
+    hideResults();
+    
+    try {
+        // Use Wikipedia API directly (CORS-enabled)
+        const cleanTopic = topic.replace(/\s+/g, '_');
+        const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTopic)}`);
+        
+        if (!response.ok) {
+            throw new Error('Wikipedia API failed');
         }
-      });
+        
+        const data = await response.json();
+        
+        let summary = '';
+        let citations = [];
+        
+        if (data && data.extract) {
+            summary = `<h3>${data.title}</h3><p>${data.extract}</p>`;
+            citations.push({
+                title: data.title + " - Wikipedia",
+                url: data.content_urls.desktop.page
+            });
+        } else {
+            summary = `<p>No detailed information found for "${topic}". Try a different search term or check spelling.</p>`;
+            citations = [
+                { title: `Search "${topic}" on Wikipedia`, url: `https://en.wikipedia.org/wiki/Special:Search/${encodeURIComponent(topic)}` }
+            ];
+        }
+        
+        displayResults({ summary, citations });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Failed to fetch research data. The topic might not exist on Wikipedia or there might be a network issue.');
+    } finally {
+        setLoadingState(false);
+    }
+}
+
+function displayResults(data) {
+    summaryContent.innerHTML = data.summary;
+    
+    citationsContent.innerHTML = '';
+    if (data.citations && data.citations.length > 0) {
+        data.citations.forEach(citation => {
+            const citationEl = document.createElement('div');
+            citationEl.className = 'citation';
+            citationEl.innerHTML = `<a href="${citation.url}" target="_blank">${citation.title}</a>`;
+            citationsContent.appendChild(citationEl);
+        });
     }
     
-    if (!summary) {
-      summary = `No detailed information found for "${topic}". This could be due to the topic being too specific, misspelled, or not available in Wikipedia. Try searching for a more general term or check the spelling.`;
-      citations = [
-        { title: `Search "${topic}" on Wikipedia`, url: `https://en.wikipedia.org/wiki/Special:Search/${encodeURIComponent(topic)}` },
-        { title: `Google Search for "${topic}"`, url: `https://www.google.com/search?q=${encodeURIComponent(topic)}` }
-      ];
+    timestampEl.textContent = `Research completed at ${new Date().toLocaleString()}`;
+    showResults();
+}
+
+function setLoadingState(loading) {
+    startResearchBtn.disabled = loading;
+    if (loading) {
+        btnText.textContent = 'Researching...';
+        spinner.classList.remove('hidden');
+    } else {
+        btnText.textContent = 'Start Research';
+        spinner.classList.add('hidden');
     }
-    
-    res.json({
-      summary: summary,
-      citations: citations
-    });
-    
-  } catch (error) {
-    console.error("Error in /api/research:", error);
-    res.status(500).json({ 
-      error: "Internal server error",
-      message: "Failed to fetch research data. Please try again."
-    });
-  }
-});
+}
 
-app.get('/health', (req, res) => {
-  res.json({ status: "running", message: "AI Research Agent API is online" });
-});
+function showResults() {
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+}
 
-app.listen(PORT, () => {
-  console.log(`Backend running at http://localhost:${PORT}`);
-});
+function hideResults() {
+    resultsDiv.classList.add('hidden');
+}
+
+function showError(message) {
+    errorDiv.textContent = message;
+    errorDiv.classList.remove('hidden');
+}
+
+function hideError() {
+    errorDiv.classList.add('hidden');
+}
+
+
