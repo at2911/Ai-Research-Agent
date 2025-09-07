@@ -285,14 +285,51 @@ class NexoraAuth {
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
-
-    initializeMainApp() {
-        // Initialize the main research functionality
-        console.log('🚀 Nexora main application initialized for:', this.currentUser.name);
-        
-        // Update search stats
-        this.updateSearchStats();
+initializeMainApp() {
+    // Initialize the main research functionality
+    console.log('🚀 Nexora main application initialized for:', this.currentUser.name);
+    
+    // Update search stats
+    this.updateSearchStats();
+    
+    // Add suggestion chips functionality
+    this.initializeSuggestions();
+    
+    // Add clear button functionality
+    this.initializeClearButton();
+    
+    // Focus on search input
+    const searchInput = document.getElementById('researchTopic');
+    if (searchInput) {
+        searchInput.focus();
     }
+}
+
+initializeSuggestions() {
+    document.querySelectorAll('.suggestion-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            const topic = chip.dataset.topic;
+            const searchInput = document.getElementById('researchTopic');
+            if (searchInput) {
+                searchInput.value = topic;
+                searchInput.focus();
+            }
+        });
+    });
+}
+
+initializeClearButton() {
+    const clearBtn = document.querySelector('.clear-btn');
+    const searchInput = document.getElementById('researchTopic');
+    
+    if (clearBtn && searchInput) {
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+        });
+    }
+}
+
 
     updateSearchStats() {
         const searchCount = localStorage.getItem('nexora_search_count') || '0';
@@ -900,4 +937,5 @@ researchTopicInput.addEventListener('input', function() {
 });
 
 console.log('🚀 Nexora Multi-Source Research Engine initialized');
+
 
