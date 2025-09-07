@@ -12,167 +12,403 @@
     <!-- Animated Background -->
     <div class="background">
         <div class="particles"></div>
+        <div class="neural-network">
+            <div class="node node-1"></div>
+            <div class="node node-2"></div>
+            <div class="node node-3"></div>
+            <div class="node node-4"></div>
+            <div class="connection con-1"></div>
+            <div class="connection con-2"></div>
+            <div class="connection con-3"></div>
+        </div>
         <div class="glow-orb glow-orb-1"></div>
         <div class="glow-orb glow-orb-2"></div>
         <div class="glow-orb glow-orb-3"></div>
+        <div class="data-stream stream-1"></div>
+        <div class="data-stream stream-2"></div>
     </div>
 
-    <!-- Main Container -->
-    <div class="container">
-        <!-- Hero Section -->
-        <header class="hero">
-            <div class="logo-container">
-                <div class="logo">
-                    <div class="logo-symbol">
-                        <span class="logo-n">N</span>
-                        <div class="orbit-ring"></div>
-                        <div class="circuit-pattern">
-                            <div class="circuit-dot"></div>
-                            <div class="circuit-dot"></div>
-                            <div class="circuit-dot"></div>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="logo-mini">
+                        <div class="logo-symbol-mini">
+                            <span class="logo-n-mini">N</span>
+                            <div class="orbit-ring-mini"></div>
                         </div>
                     </div>
+                    <h1>Welcome to Nexora</h1>
+                    <p>Your AI Research Companion awaits</p>
                 </div>
-                <h1 class="brand-name">Nexora</h1>
-            </div>
-            
-            <div class="hero-text">
-                <h2 class="tagline">Your AI Research Companion</h2>
-                <p class="subtitle">Search smarter. Summarize faster. Think deeper.</p>
-            </div>
-        </header>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Sign In
+                    </button>
+                    <button class="auth-tab" data-tab="register">
+                        <i class="fas fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                </div>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Prompt Input Section -->
-            <div class="prompt-section">
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <textarea 
-                            id="researchTopic"
-                            placeholder="Ask Nexora anything… from climate change to quantum AI"
-                            rows="3"
-                        ></textarea>
-                        <button class="voice-btn" title="Voice Input">
-                            <i class="fas fa-microphone"></i>
-                        </button>
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <div class="input-wrapper-auth">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                        </div>
                     </div>
-                    
-                    <button id="startResearch" class="submit-btn">
+                    <div class="form-group">
+                        <div class="input-wrapper-auth">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-wrapper">
+                            <input type="checkbox" id="rememberMe">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="auth-btn">
                         <span class="btn-content">
                             <i class="fas fa-rocket"></i>
-                            <span class="btn-text">Research with Nexora</span>
+                            Launch Nexora
                         </span>
                         <div class="btn-loading hidden">
                             <div class="loading-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                                <span></span><span></span><span></span>
                             </div>
-                            <span>Researching...</span>
                         </div>
-                        <div class="btn-glow"></div>
+                    </button>
+                </form>
+
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <div class="input-wrapper-auth">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerName" placeholder="Full Name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper-auth">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="registerEmail" placeholder="Email Address" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper-auth">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" placeholder="Create Password" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-wrapper-auth">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="auth-btn">
+                        <span class="btn-content">
+                            <i class="fas fa-user-plus"></i>
+                            Join Nexora
+                        </span>
+                        <div class="btn-loading hidden">
+                            <div class="loading-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                    </button>
+                </form>
+
+                <div id="authError" class="auth-error hidden"></div>
+                
+                <div class="demo-access">
+                    <p>Or try the demo version</p>
+                    <button id="demoBtn" class="demo-btn">
+                        <i class="fas fa-play"></i>
+                        Demo Access
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Response Section -->
-            <div id="results" class="response-section hidden">
-                <div class="results-header">
-                    <h3><i class="fas fa-brain"></i> Research Results</h3>
-                    <div class="results-actions">
-                        <button class="action-btn" title="Export as PDF">
-                            <i class="fas fa-file-pdf"></i>
-                        </button>
-                        <button class="action-btn" title="Save to History">
-                            <i class="fas fa-bookmark"></i>
-                        </button>
-                        <span id="timestamp" class="timestamp"></span>
+    <!-- Main Application Screen -->
+    <div id="mainScreen" class="screen">
+        <header class="top-nav">
+            <div class="nav-left">
+                <div class="logo-mini">
+                    <div class="logo-symbol-mini">
+                        <span class="logo-n-mini">N</span>
+                        <div class="orbit-ring-mini"></div>
+                    </div>
+                </div>
+                <span class="app-title">Nexora</span>
+            </div>
+            <div class="nav-right">
+                <div class="user-info">
+                    <span id="userName" class="user-name">Demo User</span>
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="container">
+            <!-- Enhanced Hero Section -->
+            <header class="hero">
+                <div class="logo-container">
+                    <div class="logo">
+                        <div class="logo-symbol">
+                            <span class="logo-n">N</span>
+                            <div class="orbit-ring"></div>
+                            <div class="circuit-pattern">
+                                <div class="circuit-dot"></div>
+                                <div class="circuit-dot"></div>
+                                <div class="circuit-dot"></div>
+                            </div>
+                            <div class="energy-field"></div>
+                        </div>
+                    </div>
+                    <h1 class="brand-name">Nexora</h1>
+                </div>
+                
+                <div class="hero-text">
+                    <h2 class="tagline">Your AI Research Companion</h2>
+                    <p class="subtitle">Search smarter. Summarize faster. Think deeper.</p>
+                    <div class="research-stats">
+                        <div class="stat-item">
+                            <span class="stat-icon">🧠</span>
+                            <div class="stat-info">
+                                <span id="totalSearches" class="stat-number">127</span>
+                                <span class="stat-label">Researches</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">⚡</span>
+                            <div class="stat-info">
+                                <span class="stat-number">5+</span>
+                                <span class="stat-label">Sources</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-icon">🚀</span>
+                            <div class="stat-info">
+                                <span class="stat-number">0.8s</span>
+                                <span class="stat-label">Avg Speed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Enhanced Main Content -->
+            <main class="main-content">
+                <!-- Advanced Search Section -->
+                <div class="search-section">
+                    <div class="search-card">
+                        <div class="search-header">
+                            <h2>What would you like to research?</h2>
+                            <p>Enter any topic and unlock comprehensive insights from multiple sources</p>
+                        </div>
+                        
+                        <div class="search-form">
+                            <div class="input-container">
+                                <div class="input-wrapper">
+                                    <textarea 
+                                        id="researchTopic"
+                                        placeholder="Ask Nexora anything… from climate change to quantum AI"
+                                        rows="3"
+                                    ></textarea>
+                                    <div class="input-actions">
+                                        <button class="voice-btn" title="Voice Input">
+                                            <i class="fas fa-microphone"></i>
+                                        </button>
+                                        <button class="clear-btn" title="Clear Input">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="search-suggestions">
+                                    <button class="suggestion-chip" data-topic="Artificial Intelligence trends 2024">
+                                        AI Trends 2024
+                                    </button>
+                                    <button class="suggestion-chip" data-topic="Climate change solutions">
+                                        Climate Solutions
+                                    </button>
+                                    <button class="suggestion-chip" data-topic="Space exploration news">
+                                        Space Exploration
+                                    </button>
+                                    <button class="suggestion-chip" data-topic="Quantum computing breakthroughs">
+                                        Quantum Computing
+                                    </button>
+                                </div>
+                                
+                                <button id="startResearch" class="submit-btn">
+                                    <span class="btn-content">
+                                        <i class="fas fa-search"></i>
+                                        <span class="btn-text">Research with Nexora</span>
+                                    </span>
+                                    <div class="btn-loading hidden">
+                                        <div class="loading-dots">
+                                            <span></span><span></span><span></span>
+                                        </div>
+                                        <span>Analyzing...</span>
+                                    </div>
+                                    <div class="btn-glow"></div>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="knowledge-cards">
-                    <div class="knowledge-card main-summary">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <i class="fas fa-lightbulb"></i>
+                <!-- Enhanced Results Section -->
+                <div id="results" class="response-section hidden">
+                    <div class="results-header">
+                        <div class="results-title">
+                            <h3><i class="fas fa-brain"></i> Research Results</h3>
+                            <div class="source-indicators">
+                                <div class="source-badge active" data-source="encyclopedia">
+                                    <i class="fas fa-book"></i>
+                                    <span>Encyclopedia</span>
+                                </div>
+                                <div class="source-badge" data-source="news">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>News</span>
+                                </div>
+                                <div class="source-badge" data-source="web">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Web</span>
+                                </div>
                             </div>
-                            <h4>AI Summary</h4>
-                            <button class="expand-btn">
-                                <i class="fas fa-expand-alt"></i>
+                        </div>
+                        <div class="results-actions">
+                            <button class="action-btn" id="exportBtn" title="Export Results">
+                                <i class="fas fa-download"></i>
+                                <span>Export</span>
+                            </button>
+                            <button class="action-btn" id="shareBtn" title="Share Results">
+                                <i class="fas fa-share"></i>
+                                <span>Share</span>
+                            </button>
+                            <span id="timestamp" class="timestamp"></span>
+                        </div>
+                    </div>
+
+                    <div class="knowledge-cards">
+                        <div class="knowledge-card main-summary">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h4>AI Summary</h4>
+                                <div class="card-actions">
+                                    <button class="card-action" title="Copy Summary">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button class="card-action expand-btn">
+                                        <i class="fas fa-expand-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="summaryContent" class="summary-text"></div>
+                            </div>
+                        </div>
+
+                        <div class="knowledge-card sources-card">
+                            <div class="card-header">
+                                <div class="card-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <h4>Knowledge Sources</h4>
+                                <div class="source-count">
+                                    <span id="sourceCount">0</span> sources
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div id="citationsContent" class="sources-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Enhanced Nexora Insights -->
+                    <div class="insights-box">
+                        <div class="insights-header">
+                            <div class="insights-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <span>Nexora AI Insights</span>
+                            <div class="confidence-meter">
+                                <div class="confidence-bar">
+                                    <div id="confidenceLevel" class="confidence-fill"></div>
+                                </div>
+                                <span class="confidence-text">95% Confidence</span>
+                            </div>
+                        </div>
+                        <div id="nexoraInsights" class="insights-content">
+                            Key takeaways and deep connections will appear here...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Section -->
+                <div id="error" class="error-section hidden">
+                    <div class="error-card">
+                        <div class="error-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="error-content">
+                            <h4>Research Failed</h4>
+                            <p id="errorMessage"></p>
+                            <button class="retry-btn">
+                                <i class="fas fa-redo"></i>
+                                Try Again
                             </button>
                         </div>
-                        <div class="card-content">
-                            <div id="summaryContent" class="summary-text"></div>
-                        </div>
-                    </div>
-
-                    <div class="knowledge-card sources-card">
-                        <div class="card-header">
-                            <div class="card-icon">
-                                <i class="fas fa-database"></i>
-                            </div>
-                            <h4>Knowledge Sources</h4>
-                        </div>
-                        <div class="card-content">
-                            <div id="citationsContent" class="sources-grid"></div>
-                        </div>
                     </div>
                 </div>
+            </main>
 
-                <!-- Nexora Insights Box -->
-                <div class="insights-box">
-                    <div class="insights-header">
-                        <i class="fas fa-magic"></i>
-                        <span>Nexora Insights</span>
-                    </div>
-                    <div id="nexoraInsights" class="insights-content">
-                        Key takeaways and deep connections will appear here...
-                    </div>
+            <!-- Enhanced Side Panel -->
+            <aside class="side-panel">
+                <div class="panel-header">
+                    <i class="fas fa-history"></i>
+                    <span>Research History</span>
+                    <button class="clear-history-btn" title="Clear History">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
-            </div>
+                <div id="historyList" class="history-list">
+                    <!-- History items will be dynamically added -->
+                </div>
+            </aside>
 
-            <!-- Error Section -->
-            <div id="error" class="error-section hidden">
-                <div class="error-card">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <div class="error-content">
-                        <h4>Research Failed</h4>
-                        <p id="errorMessage"></p>
-                        <button class="retry-btn">Try Again</button>
-                    </div>
+            <!-- Footer -->
+            <footer class="footer">
+                <p>Made with ❤️ by Team Nexora • Powered by Advanced AI</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <a href="#" class="footer-link">API</a>
+                    <a href="#" class="footer-link">Contact</a>
                 </div>
-            </div>
-        </main>
-
-        <!-- Side Panel (History) -->
-        <aside class="side-panel">
-            <div class="panel-header">
-                <i class="fas fa-history"></i>
-                <span>Research History</span>
-            </div>
-            <div class="history-list">
-                <div class="history-item">
-                    <span class="history-query">Climate change solutions</span>
-                    <span class="history-time">2 min ago</span>
-                </div>
-                <div class="history-item">
-                    <span class="history-query">Quantum computing</span>
-                    <span class="history-time">5 min ago</span>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>Made with ❤️ by Team Nexora</p>
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Docs</a>
-                <a href="#">GitHub</a>
-                <a href="#">Contact</a>
-            </div>
-        </footer>
+            </footer>
+        </div>
     </div>
 
     <script src="app.js"></script>
