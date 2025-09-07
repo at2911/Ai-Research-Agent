@@ -9,6 +9,11 @@ const btnText = document.querySelector('.btn-text');
 const spinner = document.querySelector('.spinner');
 
 startResearchBtn.addEventListener('click', performResearch);
+researchTopicInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+        performResearch();
+    }
+});
 
 async function performResearch() {
     const topic = researchTopicInput.value.trim();
@@ -23,7 +28,6 @@ async function performResearch() {
     hideResults();
     
     try {
-        // Use Wikipedia API directly (CORS-enabled)
         const cleanTopic = topic.replace(/\s+/g, '_');
         const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(cleanTopic)}`);
         
@@ -104,5 +108,3 @@ function showError(message) {
 function hideError() {
     errorDiv.classList.add('hidden');
 }
-
-
